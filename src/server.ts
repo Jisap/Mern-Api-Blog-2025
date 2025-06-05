@@ -64,4 +64,18 @@ app.use(limiter);
     }
   }
 
-})()
+})();
+
+
+const handleServerShutdown = async () => {
+  try {
+    console.log('Srever SHUTDOWN');
+    process.exit(0);
+  } catch (error) {
+    console.log('Error during server shutdown', error);
+  }
+}
+
+process.on('SIGTERM', handleServerShutdown); // Cuando se solicita la terminación de un proceso por parte del sistema operativo 
+process.on('SIGINT', handleServerShutdown);  // Cuando se presiona CTrl + C se ejecuta un cierre controlado
+

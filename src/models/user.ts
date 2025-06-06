@@ -1,6 +1,6 @@
 import { model, Schema } from "mongoose";
+import bcrypt from 'bcrypt';
 
- 
 export interface IUser { // IUser es para la verificación de tipos en tiempo de desarrollo con TypeScript.
   username: string;
   email: string;
@@ -84,5 +84,18 @@ const userSchema = new Schema<IUser>( // User es para la interacción con la bas
     timestamps: true,
   },
 )
+
+// Esto define una función que Mongoose ejecutará antes de que un documento de usuario se guarde
+// en la base de datos (ya sea al crear un nuevo usuario o al actualizar uno existente).
+
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) {                        // "Si la contraseña no ha sido modificada, entonces sáltate el hashing y simplemente llama a next()"
+    next();
+    return
+  }
+
+  this.password = await bcrypt.hash(this.password, 10);      // Si la contraseña sí fue modificada, la condición es falsa, y el código procederá a hashear la contraseña.
+  next()
+})
 
 export default model<IUser>('User', userSchema);

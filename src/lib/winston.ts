@@ -25,7 +25,7 @@ if(config.NODE_ENV !== 'production') {
           const metaStr = Object.keys(meta).length
             ? `\n${JSON.stringify(meta)}`
             : ''
-          return `${timeStamp} [${level.toUpperCase()}]: ${message}${metaStr}`;
+          return `${timeStamp} [${level}]: ${message}${metaStr}`;
         })
       )
     })

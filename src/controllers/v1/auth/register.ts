@@ -7,7 +7,7 @@ import User from '@/models/user';
 import type { IUser } from '@/models/user';
 import { genUsername } from '@/utils';
 import { generateAccessToken, generateRefreshToken } from '@/lib/jwt';
-
+import Token from '@/models/token';
 
 
 type UserData = Pick<IUser, 'username' | 'email' | 'password' | 'role'>; // Subtipo apartir de IUser
@@ -30,7 +30,17 @@ const register = async (req: Request, res: Response):Promise<void> => {
     const accessToken = generateAccessToken(newUser._id);
     const refreshToken = generateRefreshToken(newUser._id);
 
-    res.cookie('refreshToken', refreshToken, {
+    await Token.create({ // Se guarda el refreshToken en la BD para su gestión futura
+      token: refreshToken,
+      userId: newUser._id,
+    })
+
+    logger.info('Refresh token created for user', {
+      userId: newUser._id,
+      token: refreshToken
+    })
+
+    res.cookie('refreshToken', refreshToken, { // El refreshToken se envía al cliente en una cookie HttpOnly
       httpOnly: true,
       secure: config.NODE_ENV === 'production',
       sameSite: 'strict',
@@ -42,7 +52,7 @@ const register = async (req: Request, res: Response):Promise<void> => {
         email: newUser.email,
         role: newUser.role,
       },
-      accessToken
+      accessToken // El accessToken se envía en el cuerpo de la respuesta para uso inmediato
     });
 
     logger.info('User registered successfully', {

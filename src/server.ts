@@ -25,6 +25,8 @@ const corsOptions: CorsOptions = {
   }
 }
 
+app.use(express.json());
+
 app.use(cors( corsOptions ));
 
 // Se encarga de analizar (parsear) los cuerpos de las solicitudes entrantes que están codificadas 

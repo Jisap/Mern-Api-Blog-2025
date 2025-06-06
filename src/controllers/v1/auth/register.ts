@@ -6,6 +6,8 @@ import type { Request, Response } from 'express';
 import User from '@/models/user';
 import type { IUser } from '@/models/user';
 import { genUsername } from '@/utils';
+import { generateAccessToken, generateRefreshToken } from '@/lib/jwt';
+
 
 
 type UserData = Pick<IUser, 'username' | 'email' | 'password' | 'role'>; // Subtipo apartir de IUser
@@ -25,17 +27,30 @@ const register = async (req: Request, res: Response):Promise<void> => {
       role,
     });
 
+    const accessToken = generateAccessToken(newUser._id);
+    const refreshToken = generateRefreshToken(newUser._id);
+
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: config.NODE_ENV === 'production',
+      sameSite: 'strict',
+    });
+
     res.status(201).json({
       user: {
         username: newUser.username,
         email: newUser.email,
         role: newUser.role,
-      }
-    })
+      },
+      accessToken
+    });
 
-    res.status(200).json({
-      message: 'New user created'
-    })
+    logger.info('User registered successfully', {
+      username: newUser.username,
+      email: newUser.email,
+      role: newUser.role,
+    });
+
   } catch (error) {
     res.status(500).json({
       code: 'ServerError',

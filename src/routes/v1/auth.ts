@@ -51,7 +51,13 @@ router.post(
     .isLength({ max: 50 })
     .withMessage('Email must be less than 50 characters')
     .isEmail()
-    .withMessage('Invalid email address'),  
+    .withMessage('Invalid email address')
+    .custom(async (value) => {
+      const userExists = await User.exists({ email: value });
+      if (!userExists) {
+        throw new Error('Email or password invalid');
+      }
+    }),  
   body('password')
     .notEmpty()
     .withMessage('Password is required')

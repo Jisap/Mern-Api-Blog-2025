@@ -57,7 +57,7 @@ app.use(limiter);
 
     await connectoToDatabase();
 
-    app.use('/api/v1', v1Routes);
+    app.use('/api/v1', v1Routes); // localhost:3000/api/v1 - authindex(/auth) - authRoutes(/register, /login)
     app.listen(config.PORT, () => {
       logger.info(`Server running. http://localhost:${config.PORT}`);
     })

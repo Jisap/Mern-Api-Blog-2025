@@ -4,13 +4,15 @@ import register from '@/controllers/v1/auth/register';
 import validationError from '@/middlewares/validationError';
 import User from '@/models/user';
 import { Router } from 'express';
-import { body } from 'express-validator'; 
+import { body, cookie } from 'express-validator'; 
 import bcrypt from 'bcrypt';
+import refreshToken from '@/controllers/v1/auth/refresh_Token';
 
 
 
 const router = Router();
 
+// Register
 router.post(
   '/register', 
   body('email')
@@ -42,6 +44,7 @@ router.post(
   register
 );
 
+// Login
 router.post(
   '/login',
   body('email')
@@ -80,6 +83,19 @@ router.post(
     }),
     validationError,
   login
+)
+
+// Esto un endpoint específico que el cliente llama solo cuando su accessToken ha expirado y necesita obtener uno nuevo, 
+// utilizando el refreshToken que se almacenó de forma segura en una cookie.
+router.post(
+  '/refresh-token',
+  cookie('refreshToken')
+    .notEmpty()
+    .withMessage('Refresh token is required')
+    .isJWT()
+    .withMessage('Invalid refresh token'),
+  validationError,
+  refreshToken
 )
 
 export default router;

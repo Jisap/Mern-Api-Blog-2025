@@ -25,3 +25,11 @@ export const generateRefreshToken = (userId: Types.ObjectId): string => {
     },
   )
 }
+
+export const verifyAccessToken = (token: string) => {
+  return jwt.verify(token, config.JWT_ACCESS_SECRET)    // Se compara el token con el secreto de acceso y devuelve  el payload codificado (userId)
+}
+
+export const verifyRefreshToken = (token: string) => {
+  return jwt.verify(token, config.JWT_REFRESH_SECRET)   // Se compara el token con el secreto de refresco
+}

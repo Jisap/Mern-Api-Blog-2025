@@ -39,10 +39,10 @@ const register = async (req: Request, res: Response):Promise<void> => {
       role,
     });
 
-    const accessToken = generateAccessToken(newUser._id);
-    const refreshToken = generateRefreshToken(newUser._id);
+    const accessToken = generateAccessToken(newUser._id);    // Vida corta, se usa para autorizar rutas protegidas
+    const refreshToken = generateRefreshToken(newUser._id);  // Vida larga, se usa para refrescar el token de acceso
 
-    await Token.create({ // Se guarda el refreshToken en la BD para su gestión futura
+    await Token.create({                                     // Se guarda el refreshToken en la BD para su gestión futura
       token: refreshToken,
       userId: newUser._id,
     })
@@ -52,7 +52,7 @@ const register = async (req: Request, res: Response):Promise<void> => {
       token: refreshToken
     })
 
-    res.cookie('refreshToken', refreshToken, { // El refreshToken se envía al cliente en una cookie HttpOnly
+    res.cookie('refreshToken', refreshToken, {               // El refreshToken se envía al cliente en una cookie HttpOnly
       httpOnly: true,
       secure: config.NODE_ENV === 'production',
       sameSite: 'strict',
@@ -64,7 +64,7 @@ const register = async (req: Request, res: Response):Promise<void> => {
         email: newUser.email,
         role: newUser.role,
       },
-      accessToken // El accessToken se envía en el cuerpo de la respuesta para uso inmediato
+      accessToken                                           // El accessToken se envía en el cuerpo de la respuesta para uso inmediato
     });
 
     logger.info('User registered successfully', {

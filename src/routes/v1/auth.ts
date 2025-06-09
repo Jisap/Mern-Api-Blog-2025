@@ -7,6 +7,8 @@ import { Router } from 'express';
 import { body, cookie } from 'express-validator'; 
 import bcrypt from 'bcrypt';
 import refreshToken from '@/controllers/v1/auth/refresh_Token';
+import logout from '@/controllers/v1/auth/logout';
+import authenticate from '@/middlewares/authenticate';
 
 
 
@@ -96,6 +98,13 @@ router.post(
     .withMessage('Invalid refresh token'),
   validationError,
   refreshToken
+);
+
+router.post(
+  '/logout',
+  authenticate, // header -> token -> verify -> userId -> req.userId -> next -> logout
+  validationError,
+  logout        // lee cookie refreshToken -> delete cookie en bd  -> delete cookie en el cliente 
 )
 
 export default router;

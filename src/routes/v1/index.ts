@@ -3,6 +3,7 @@ import { time, timeStamp } from 'console';
 import { Router } from 'express';
 import authRoutes from '@/routes/v1/auth';
 import config from '@/config'
+import userRouter from '@/routes/v1/user';
 
 const router = Router();
 
@@ -17,5 +18,6 @@ router.get('/', (req, res) => {
 })
 
 router.use('/auth', authRoutes);
+router.use('/user', userRouter);
 
 export default router;

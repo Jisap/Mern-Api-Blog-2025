@@ -1,3 +1,4 @@
+import deleteCurrentUser from "@/controllers/v1/user/delete_current_user";
 import getCurrentUser from "@/controllers/v1/user/get_current_user";
 import { updateCurrentUser } from "@/controllers/v1/user/update_current_user";
 import authenticate from "@/middlewares/authenticate";
@@ -65,6 +66,13 @@ router.put(
     .withMessage('Social links must be less than 100 characters'),
   validationError,
   updateCurrentUser
+)
+
+router.delete(
+  '/current',
+  authenticate,
+  authorize(['admin', 'user']),
+  deleteCurrentUser
 )
 
 

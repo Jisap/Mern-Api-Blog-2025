@@ -45,6 +45,24 @@ router.put(
         throw new Error('This email is already in use');
       }
     }),
+  body('password')
+    .optional()
+    .isLength({ min: 8 })
+    .withMessage('Password must be at least 8 characters'),
+  body('first_name')
+    .optional()
+    .isLength({ max: 20 })
+    .withMessage('First name must be less than 20'),
+  body('last_name')
+    .optional()
+    .isLength({ max: 20 })
+    .withMessage('Last name must be less than 20'),
+  body(['website', 'facebook', 'instagram', 'linkedin', 'x', 'youtube'])
+    .optional()
+    .isURL()
+    .withMessage('Social links must be a valid URL')
+    .isLength({ max: 100 })
+    .withMessage('Social links must be less than 100 characters'),
   validationError,
   updateCurrentUser
 )

@@ -33,6 +33,18 @@ router.put(
         throw new Error('Username already exists')
       }
     }),
+  body('email')
+    .optional()
+    .isLength({ max: 50 })
+    .withMessage('Email must be less than 50 characters')
+    .isEmail()
+    .withMessage('Email must be a valid email')
+    .custom( async (value) => {
+      const userExists = await User.exists({ email: value });
+      if (userExists) {
+        throw new Error('This email is already in use');
+      }
+    }),
   validationError,
   updateCurrentUser
 )

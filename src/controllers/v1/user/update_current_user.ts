@@ -4,7 +4,7 @@ import { Request, Response } from "express";
 
 const updateCurrentUser = async (req: Request, res: Response): Promise<void> => {
 
-  const userId = req.userId;
+  const userId = req.userId; // Obtenemos el userId del usuario desde la cabecera de la petición (cookies)
   const {
     username,
     email,

@@ -17,7 +17,9 @@ const config = {
   WHITELIST_ADMINS_MAIL: [ // Lista de emails de los administradores que pueden registrarse
     'test1@test.com',
     'test2@test.com',
-  ]
+  ],
+  defaultResLimit: 20,
+  defaultResOffset: 0,
 }
 
 export default config;

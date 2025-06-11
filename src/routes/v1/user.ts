@@ -1,4 +1,5 @@
 import deleteCurrentUser from "@/controllers/v1/user/delete_current_user";
+import getAllUser from "@/controllers/v1/user/get_all_user";
 import getCurrentUser from "@/controllers/v1/user/get_current_user";
 import { updateCurrentUser } from "@/controllers/v1/user/update_current_user";
 import authenticate from "@/middlewares/authenticate";
@@ -73,6 +74,13 @@ router.delete(
   authenticate,
   authorize(['admin', 'user']),
   deleteCurrentUser
+)
+
+router.get(
+  "/",
+  authenticate,
+  authorize(['admin']),
+  getAllUser
 )
 
 

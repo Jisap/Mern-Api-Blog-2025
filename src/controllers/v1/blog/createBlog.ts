@@ -9,6 +9,7 @@ import type { Request, Response } from 'express';
 import Blog from '@/models/blog';
 import { IBlog } from '../../../models/blog';
 
+
 type BlogData = Pick<IBlog, 'title' | 'content' | 'banner' | 'status'>;
 
 const window = new JSDOM('').window; // DOMPurify necesita un objeto window para funcionar

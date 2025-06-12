@@ -11,7 +11,8 @@ const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2 MB
 
 const uploadBlogBanner = (method: 'post' | 'put') => {
   return async (req: Request, res: Response, next: NextFunction) => {
-    if(method === 'put' && !req.file) {
+    
+    if(method === 'put' && !req.file) {                // Si el método es PUT y no hay archivo en la petición, pasa al siguiente middleware
       next();
       return;
     }
@@ -24,7 +25,7 @@ const uploadBlogBanner = (method: 'post' | 'put') => {
       return;
     }
 
-    if(req.file.size > MAX_FILE_SIZE) {
+    if(req.file.size > MAX_FILE_SIZE) {                 // Si el tamaño del archivo es mayor a 2 MB, devuelve un error 413
       res.status(413).json({
         code: 'ValidationError',
         message: "File size must be less than 2MB",
@@ -38,12 +39,12 @@ const uploadBlogBanner = (method: 'post' | 'put') => {
       //  .select('banner.publicId')
       //  .exec()
 
-      const data = await uploadToCloudinary(
+      const data = await uploadToCloudinary(               // Sube el banner_image a Cloudinary
         req.file.buffer,
         //blog?.banner.publicId.replace('blog-api/', '')
       )
 
-      if(!data){
+      if(!data){                                           // Si el método de subida a Cloudinary falla, devuelve un error 500
         res.status(500).json({
           code: 'ServerError',
           message: 'Internal server error',
@@ -55,7 +56,7 @@ const uploadBlogBanner = (method: 'post' | 'put') => {
         return
       }
 
-      const newBanner = {
+      const newBanner = {                                  // Si la subida a Cloudinary es exitosa, crea un nuevo objeto banner en la base de datos
         publicId: data.public_id,
         url: data.secure_url,
         width: data.width,
@@ -67,7 +68,7 @@ const uploadBlogBanner = (method: 'post' | 'put') => {
         banner: newBanner
       })
 
-      req.body.banner = newBanner;
+      req.body.banner = newBanner;                         // Actualiza el objeto req.body con el nuevo banner para que el contoller createBlog lo utilice
 
       next();
 

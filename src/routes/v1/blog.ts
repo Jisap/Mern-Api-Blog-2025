@@ -8,7 +8,7 @@ import { body, param, query } from "express-validator";
 import multer from 'multer';
 
 
-const upload = multer()
+const upload = multer(); // instancia de multer
 
 
 
@@ -18,8 +18,8 @@ router.post(
   "/",
   authenticate,
   authorize(['admin']),
-  upload.single('banner_image'),
-  uploadBlogBanner('post'),
+  upload.single('banner_image'), // Intercepta peticiones multipart/form-data con el nombre de archivo banner_image para añadirlo al objeto req.file
+  uploadBlogBanner('post'),      // Sube a cloudinary el banner_image y devuelve la URL y el tamaño del archivo
   body('title')
     .trim()
     .notEmpty()

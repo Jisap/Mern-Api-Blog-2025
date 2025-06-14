@@ -7,7 +7,7 @@ import type { Request, Response } from "express";
 
 
 
-const getBlogsBySlug = async (req: Request, res: Response): Promise<void> => {
+const getBlogBySlug = async (req: Request, res: Response): Promise<void> => {
 
   try {
 
@@ -64,4 +64,4 @@ const getBlogsBySlug = async (req: Request, res: Response): Promise<void> => {
   }
 }
 
-export default getBlogsBySlug
+export default getBlogBySlug

@@ -1,5 +1,4 @@
 
-import config from "@/config";
 import { logger } from "@/lib/winston";
 import Blog from "@/models/blog";
 import User from "@/models/user";
@@ -11,8 +10,8 @@ const getBlogBySlug = async (req: Request, res: Response): Promise<void> => {
 
   try {
 
-    const userId = req.params.userId;
-    const slug = req.params.slug;
+    const userId = req.params.userId; 
+    const slug = req.params.slug; 
 
     const user = await User                                                // obtenemos el usuario según params
       .findById(userId)

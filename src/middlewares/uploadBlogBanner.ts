@@ -77,7 +77,7 @@ const uploadBlogBanner = (method: 'post' | 'put') => {
         code: error.http_code < 500 ? 'ValidationError' : error.name,
       });
 
-      logger.error('Error while uploading blog banner to cloudinary', error)
+      logger.error('Error while uploading blog banner to cloudinary', error) // Registra el error en el logger
     }
   }
 }

@@ -1,5 +1,6 @@
 import createBlog from "@/controllers/v1/blog/createBlog";
 import getAllBlogs from "@/controllers/v1/blog/getAllBlogs";
+import getBlogsBySlug from "@/controllers/v1/blog/getBlogsBySlug";
 import getBlogsByUser from "@/controllers/v1/blog/getBlogsByUser";
 import authenticate from "@/middlewares/authenticate";
 import authorize from "@/middlewares/authorize";
@@ -73,6 +74,17 @@ router.get(
     .withMessage('Offset must be a positive integer'),
   validationError,
   getBlogsByUser
+);
+
+router.get(
+  "/:slug",
+  authenticate,
+  authorize(['admin', 'user']),
+  param('slug')
+    .notEmpty()
+    .withMessage('Slug is required'),
+  validationError,
+  getBlogsBySlug
 )
 
 export default router;

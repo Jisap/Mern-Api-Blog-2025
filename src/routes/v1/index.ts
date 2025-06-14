@@ -19,6 +19,6 @@ router.get('/', (req, res) => {
 
 router.use('/auth', authRoutes);
 router.use('/users', userRoutes); // localhost:3000/api/vi/users/current
-router.use('/blog', blogRoutes);
+router.use('/blogs', blogRoutes);
 
 export default router;

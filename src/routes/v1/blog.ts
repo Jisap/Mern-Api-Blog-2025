@@ -36,7 +36,6 @@ router.post(
     .withMessage('Status is not supported'),
   validationError,
   createBlog
-
 )
 
 export default router;

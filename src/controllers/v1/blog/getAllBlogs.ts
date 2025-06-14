@@ -17,19 +17,19 @@ const getAllBlogs = async (req: Request, res: Response): Promise<void> => {
     const userId = req.userId;
     const limit = parseInt(req.query.limit as string) || config.defaultResLimit;
     const offset = parseInt(req.query.offset as string) || config.defaultResOffset;
-    const total = await Blog.countDocuments();
     const query: QueryType = {}; // creamos un objeto QueryType vacío
-
+    
     const user = await User      // obtenemos el usuario
-      .findById(userId)
-      .select('role')
-      .lean()
-      .exec();
-
-    if(user?.role === 'user'){
-      query.status = 'published';
+    .findById(userId)
+    .select('role')
+    .lean()
+    .exec();
+    
+    if(user?.role === 'user'){                            // si el usuario tiene el rol user
+      query.status = 'published';                         // solo devolvemos los blogs publicados
     }
-
+    
+    const total = await Blog.countDocuments(query);
 
     const blogs = await Blog.find(query)                  // Buscamos los blogs en su tabla
       .select('-banner.publicId -__v')                    // Excluimos el campo __v del objeto y el banner.publicId

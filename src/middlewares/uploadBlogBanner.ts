@@ -25,7 +25,7 @@ const uploadBlogBanner = (method: 'post' | 'put') => {
       return;
     }
 
-    if(req.file.size > MAX_FILE_SIZE) {                 // Si el tamaño del archivo es mayor a 2 MB, devuelve un error 413
+    if(req.file.size > MAX_FILE_SIZE) {                    // Si el tamaño del archivo es mayor a 2 MB, devuelve un error 413
       res.status(413).json({
         code: 'ValidationError',
         message: "File size must be less than 2MB",
@@ -34,14 +34,14 @@ const uploadBlogBanner = (method: 'post' | 'put') => {
     }
 
     try {
-      //const { blogId } = req.params;
-      //const blog = await Blog.findById(blogId)
-      //  .select('banner.publicId')
-      //  .exec()
+      const { blogId } = req.params;                       // Obtiene el blogId del objeto req.params
+      const blog = await Blog.findById(blogId)             // Obtiene el objeto blog de la base de datos correspondiente al blogId
+        .select('banner.publicId')
+        .exec()
 
       const data = await uploadToCloudinary(               // Sube el banner_image a Cloudinary
         req.file.buffer,
-        //blog?.banner.publicId.replace('blog-api/', '')
+        blog?.banner.publicId.replace('blog-api/', '')     // Reemplaza el nombre de archivo original del banner_image por el nuevo nombre del banner_image en Cloudinary
       )
 
       if(!data){                                           // Si el método de subida a Cloudinary falla, devuelve un error 500
@@ -50,8 +50,8 @@ const uploadBlogBanner = (method: 'post' | 'put') => {
           message: 'Internal server error',
         })
         logger.error('Error while uploading blog banner to cloudinary', {
-          //blogId,
-          //publicId: blog?.benner.publicId,
+          blogId,
+          publicId: blog?.banner.publicId,
         })
         return
       }
@@ -64,11 +64,11 @@ const uploadBlogBanner = (method: 'post' | 'put') => {
       }
 
       logger.info('Blog banner uploaded to Cloudinary', {
-        //blogId,
+        blogId,
         banner: newBanner
       })
 
-      req.body.banner = newBanner;                         // Actualiza el objeto req.body con el nuevo banner para que el contoller createBlog lo utilice
+      req.body.banner = newBanner;                         // Actualiza el objeto req.body con el nuevo banner para que el contoller createBlog/updateBlog lo utilice
 
       next();
 

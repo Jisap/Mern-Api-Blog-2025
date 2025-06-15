@@ -2,6 +2,7 @@ import createBlog from "@/controllers/v1/blog/createBlog";
 import getAllBlogs from "@/controllers/v1/blog/getAllBlogs";
 import getBlogBySlug from "@/controllers/v1/blog/getBlogBySlug";
 import getBlogsByUser from "@/controllers/v1/blog/getBlogsByUser";
+import updateBlog from "@/controllers/v1/blog/updateBlog";
 import authenticate from "@/middlewares/authenticate";
 import authorize from "@/middlewares/authorize";
 import uploadBlogBanner from "@/middlewares/uploadBlogBanner";
@@ -85,6 +86,28 @@ router.get(
     .withMessage('Slug is required'),
   validationError,
   getBlogBySlug
+);
+
+router.put(
+  '/:blogId',
+  authenticate, // Autentica el usuario e introduce el objeto req.userId apartir del token
+  authorize(['admin']),
+  param('blogId')
+    .isMongoId()
+    .withMessage('Invalid blog ID'),
+    upload.single('banner_image'), // Intercepta peticiones multipart/form-data con el nombre de archivo banner_image para añadirlo al objeto req.file
+    body('title')
+      .optional()
+      .isLength({ max: 180 })
+      .withMessage('Title must be at least 180 characters'),
+    body('content'),
+    body('status')
+      .optional()
+      .isIn(['draft', 'published'])
+      .withMessage('Status is not supported'),
+    validationError,
+    uploadBlogBanner('put'),      // Sube a cloudinary el banner_image, lo sustituye por el nuevo banner_image y devuelve la URL 
+    updateBlog,
 )
 
 export default router;

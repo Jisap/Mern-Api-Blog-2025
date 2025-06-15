@@ -1,7 +1,8 @@
 import { logger } from "@/lib/winston";
+import Blog from "@/models/blog";
 import User from "@/models/user";
 import type { Request, Response } from "express";
-
+import { v2 as cloudinary } from 'cloudinary';
 
 
 
@@ -11,10 +12,29 @@ const deletetUser = async (req: Request, res: Response): Promise<void> => {
 
   try {
 
-    await User.deleteOne({ _id: userId }); // Borramos el usuario de la BD
+    const blogs = await Blog.find({ author: userId })                 // Buscamos todos los blogs del usuario en la BD
+      .select('banner.publicId')                                      // Seleccionamos los banners asociados                           
+      .lean()
+      .exec();
+
+    const publicIds = blogs.map(({ banner }) => banner.publicId);     // Obtenemos los ids de los banners asociados
+    await cloudinary.api.delete_resources(publicIds)                  // Borramos los banners de cloudinary
+
+    logger.info('Multiple banners deleted from Cloudinary', {
+      userId
+    });
+
+    await Blog.deleteMany({ author: userId })                        // Borramos todos los blogs del usuario de la BD
+    logger.info('All blogs deleted successfuly', {
+      userId,
+      blogs
+    });
+
+    await User.deleteOne({ _id: userId });                           // Borramos el usuario de la BD
     logger.info('A user account has been deleted', {
       userId
     });
+    
     res.status(204).json({
       message: 'User deleted'
     });

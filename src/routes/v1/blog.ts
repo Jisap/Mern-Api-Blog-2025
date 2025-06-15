@@ -1,4 +1,5 @@
 import createBlog from "@/controllers/v1/blog/createBlog";
+import deleteBlog from "@/controllers/v1/blog/deleteBlog";
 import getAllBlogs from "@/controllers/v1/blog/getAllBlogs";
 import getBlogBySlug from "@/controllers/v1/blog/getBlogBySlug";
 import getBlogsByUser from "@/controllers/v1/blog/getBlogsByUser";
@@ -108,6 +109,13 @@ router.put(
     validationError,
     uploadBlogBanner('put'),      // Sube a cloudinary el banner_image, lo sustituye por el nuevo banner_image y devuelve la URL 
     updateBlog,
+);
+
+router.delete(
+  '/:blogId',
+  authenticate,
+  authorize(['admin']),
+  deleteBlog,
 )
 
 export default router;

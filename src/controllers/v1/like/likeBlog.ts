@@ -2,9 +2,6 @@ import { logger } from "@/lib/winston";
 import Blog from "@/models/blog";
 import Like from "@/models/like";
 import type { Request, Response } from 'express';
-import type { IBlog } from "@/models/blog";
-
-type BlogData = Pick<IBlog, 'title' | 'content' | 'banner' | 'status'>;
 
 
 

@@ -26,7 +26,7 @@ const unlikeBlog = async (req: Request, res: Response): Promise<void> => {
     await Like.deleteOne({ _id: existingLike._id })
 
     const blog = await Blog.findById(blogId)
-      .select('likes')
+      .select('likesCount')
       .exec()
 
     if(!blog){

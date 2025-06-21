@@ -8,10 +8,12 @@ import { body, param } from "express-validator";
 import validationError from "@/middlewares/validationError";
 import unlikeBlog from "@/controllers/v1/like/unlikeBlog";
 import commentBlog from "@/controllers/v1/comment/commentBlog";
+import getCommentsByBlog from "@/controllers/v1/comment/getCommentsByBlog";
 
 
 
 const router = Router();
+
 
 router.post(
   '/blog/:blogId',
@@ -22,10 +24,20 @@ router.post(
     .withMessage('Invalid blog id'),
   body('content')
     .trim()
-    .isEmpty()
+    .notEmpty()
     .withMessage('Content is required'),
   validationError,
   commentBlog
-)
+);
 
+router.get(
+  '/blog/:blogId',
+  authenticate,
+  authorize(['admin', 'user']),
+  param('blogId')
+    .isMongoId()
+    .withMessage('Invalid blog id'),
+  validationError,
+  getCommentsByBlog
+)
 export default router;
